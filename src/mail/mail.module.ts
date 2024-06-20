@@ -14,8 +14,8 @@ dotenv.config();
           host: 'smtp.mailpro.com',
           port: 587,
           auth: {
-            user: "CO253676@smtp.mailpro.com",
-            pass: "fQi*x64Rxlo#"
+            user: process.env.API_KEY,
+            pass: process.env.SECRET_ACCESS_KEY
           }
         },
         defaults: {
