@@ -19,7 +19,7 @@ dotenv.config();
           }
         },
         defaults: {
-          from: '"No Reply" <sergiocoba73@gmail.com',
+          from: process.env.SENDER_EMAIL
         },
         template: {
           dir: join(__dirname, '/template'),
