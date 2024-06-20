@@ -1,0 +1,40 @@
+version: '3'
+
+networks:
+  inlaze:
+    name: inlaze
+    driver: bridge
+
+services:
+  # BD postgres
+  inlaze-postgres:
+    image: postgres:latest
+    container_name: postgress-container
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Pass123*
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data 
+    networks:
+      - inlaze
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: Pass123*
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - inlaze
+
+volumes:
+  pgdata:
+  pgadmin-data:
