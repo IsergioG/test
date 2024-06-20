@@ -20,19 +20,10 @@ export class AuthController {
     return this.authService.credentials(login);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+
+  @Post(":id")
+  closeSession(@Param("id") id:string) {
+    return this.authService.closeSession(id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
 }

@@ -7,17 +7,18 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { JwtStrategy } from './guard-passport/jwt.strategy';
+import { MailService } from 'src/mail/mail.service';
 dotenv.config();
 @Module({
   imports:[TypeOrmModule.forFeature([User]),
     PassportModule,
     JwtModule.register({
     secret: process.env.JWT_SECRET, 
-    signOptions: { expiresIn: '1m' }, 
+    signOptions: { expiresIn: '1h' }, 
   }),],
   controllers: [AuthController],
   providers: [AuthService,
-    JwtStrategy
+    JwtStrategy,MailService
   ],
 })
 export class AuthModule {}

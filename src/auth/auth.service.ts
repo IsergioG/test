@@ -8,12 +8,15 @@ import { Repository } from 'typeorm';
 import { ValidationException } from 'src/utils/ValidateExceptions';
 import { Login } from './dto/create-auth.dto';
 import { comparePasswords, encodePassword } from 'src/utils/bcrypt';
+import { MailService } from 'src/mail/mail.service';
+
 
 @Injectable()
 export class AuthService {
   constructor( 
     private jwtService:JwtService,
     @InjectRepository(User) private userRepository: Repository<User>,
+    private mailService:MailService
   ){}
 
   async register(createUserDto: CreateUserDto) {
@@ -26,9 +29,10 @@ export class AuthService {
 
       const credentials={
         ...user,
-        password
+        password,
+        sesion:true
       }
-      console.log(credentials);
+      await this.mailService.email(credentials.fullName,credentials.email,)
       
       const saveUser = await this.userRepository.save(credentials)
       if (!saveUser) {
@@ -41,32 +45,41 @@ export class AuthService {
   }
 
   async credentials(login:Login){
+    try{
     const credentials=await this.userRepository.findOne({where:{email:login.mail}})
+    if(!credentials){throw new ValidationException('WRONG_USER')}
     const validatePassword = await comparePasswords(login.password, credentials.password);
+    const data={
+      ...credentials,
+      sesion:true
+    }
+    const saveUser = await this.userRepository.save(data)
+    if (!saveUser) {
+      throw new ValidationException('NOT_SAVED');
+    }
     if(validatePassword){
       const payload = { username: credentials.email, sub: credentials.userId }
+      const access_token = this.jwtService.sign(payload)
       return {
-        access_token: this.jwtService.sign(payload),
+        access_token:access_token
+        
       };
     }else{
-      throw new ValidationException('WRONG_USER')
+      throw new ValidationException('WRONG_PASS')
+    }
+  }catch(error){
+      throw new ValidationException(JSON.stringify(error.message))
     }
   }
 
 
-  findAll() {
-    return `This action returns all auth`;
+  async closeSession(id:string) {
+    const credentials=await this.userRepository.findOne({where:{userId:id}})
+    const data={
+      ...credentials,
+      sesion:false
+    }
+    return await this.userRepository.save(data)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
 }

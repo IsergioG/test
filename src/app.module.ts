@@ -8,7 +8,7 @@ import { UsersModule } from './users/users.module';
 import { PostModule } from './post/post.module';
 import { AllExceptionsFilter } from './utils/HttpExceptionFiltes';
 import { APP_FILTER } from '@nestjs/core';
-import { JwtModule } from '@nestjs/jwt';
+import { MailModule } from './mail/mail.module';
 
 dotenv.config();
 
@@ -30,10 +30,7 @@ dotenv.config();
     UsersModule,
     PostModule,
     AuthModule,
-    JwtModule.register({
-      secret: 'your-secret-key',
-      signOptions: { expiresIn: '1h' },
-    }),
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService,    

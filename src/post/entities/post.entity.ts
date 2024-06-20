@@ -3,9 +3,9 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 
 @Entity()
 export class Post {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     postId:string
-    @Column({type:'varchar'})
+    @Column({type:'varchar',unique:true})
     title:string
     @Column({type:'int'})
     content:number
@@ -15,7 +15,7 @@ export class Post {
     createdAt:Date
     @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
     updatedAt:Date
-    @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
+    @Column({name: 'deletedAt',  default: null, nullable: true })
     deletedAt:Date
     @ManyToOne(()=>User,(user)=>user.userId)
     @JoinColumn({ name: 'userId' })
