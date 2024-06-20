@@ -2,8 +2,8 @@ import { User } from "src/users/entities/user.entity"
 
 export class CreatePostDto {
     title:string
-    content:number
-    likes:string
+    content:string
+    likes:number
     createdAt:Date
     updatedAt:Date
     deletedAt:Date

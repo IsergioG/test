@@ -17,12 +17,18 @@ export class PostService {
   }
   async create(createPostDto: CreatePostDto) {
     try {
+      
       const post = this.postRepository.create(createPostDto)
       if (!post) {
         throw new ValidationException('NOT_SAVED');
       }
+      const title= createPostDto.title.toLowerCase()
+      const titleCase={
+        ...post,
+        title
+      }
       
-      const savePost = await this.postRepository.save(post)
+      const savePost = await this.postRepository.save(titleCase)
       if (!savePost) {
         throw new ValidationException('NOT_SAVED');
       }
@@ -40,8 +46,8 @@ export class PostService {
     return this.postRepository.findOne({where:{postId:id}});
   }
 
-  findOneByTitle(title: string) {
-    return this.postRepository.findOne({where:{title:title}});
+  findOneByTitle(titleName: string) {
+    return this.postRepository.findOne({where:{title:titleName}});
   }
 
   findOneByUserId(user: string) {
@@ -52,22 +58,25 @@ export class PostService {
     return data
   }
 
-  async update(id: string, updatePostDto: UpdatePostDto) {
+  async update(userId:string,id: string, updatePostDto: UpdatePostDto) {
     try {
 
-      const user = await this.userRepository.findOne({ where: { userId: id } });
-      if (!user) throw new ValidationException('USER_DONT_HAVE_POST')
+      const user = await this.userRepository.findOne({ where: { userId: userId } });
+      if(user){
+        const post = await this.postRepository.findOne({ where: { postId: id } });
+        if (!post) throw new ValidationException('POST_NOT_FOUND')
+  
+        const editedPost= Object.assign(post, updatePostDto);
+        if (!editedPost) throw new ValidationException('POST_NOT_MATCH')
+  
+        const data = await this.postRepository.save(editedPost)
+        if (!data) throw new ValidationException('POST_NOT_FOUND')
+  
+        return { response: true, body: data };
+      }else{
+        throw new ValidationException('USER_DONT_HAVE_POST')
+      }
 
-      const post = await this.postRepository.findOne({ where: { postId: id } });
-      if (!post) throw new ValidationException('POST_NOT_FOUND')
-
-      const editedPost= Object.assign(post, updatePostDto);
-      if (!editedPost) throw new ValidationException('POST_NOT_MATCH')
-
-      const data = await this.postRepository.save(editedPost)
-      if (!data) throw new ValidationException('POST_NOT_FOUND')
-
-      return { response: true, body: data };
     } catch (error) {
       throw new ValidationException(error)
     }

@@ -75,6 +75,7 @@ export class AuthService {
 
   async closeSession(id:string) {
     const credentials=await this.userRepository.findOne({where:{userId:id}})
+    if(!credentials){throw new ValidationException("USER_NOT_FOUND")}
     const data={
       ...credentials,
       sesion:false

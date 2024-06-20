@@ -19,12 +19,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message = exception.message;
     }
 
-    response.status(200).json({
-      statusCode: 200,
+    response.status(400).json({
+      statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
       message: message,
-      status,
+
       detail: (exception as any).detail || null,
     });
   }

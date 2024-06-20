@@ -7,10 +7,10 @@ export class Post {
     postId:string
     @Column({type:'varchar',unique:true})
     title:string
-    @Column({type:'int'})
-    content:number
     @Column({type:'varchar'})
-    likes:string
+    content:string
+    @Column({type:'int'})
+    likes:number
     @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
     createdAt:Date
     @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })

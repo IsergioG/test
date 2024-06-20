@@ -45,18 +45,32 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
-
+## Docker
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Container creation
+$ docker-compose up -d
 ```
+
+## Swagger
+
+La documentación de swagger quedará habilitada en el link
+- Website - http://localhost:3000/api/docs#/
+
+## Nest
+El proyecto nest quedará habilitado en el link
+- Website - http://localhost:3000/
+
+## PgAdmin
+
+Para la conexión con el visualizador de postgres use el siguiente link
+- Website - http://localhost:8080/
+
+Su configuración debe hacerse manual con datos de conexión
+
+- Host - postgress-container
+- Port - 5432
+- username - admin
+- password - Pass123*
 
 ## Support
 
